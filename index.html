@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <title>calculator</title>
+    </head>
+    <body>
+        <div class="general-div">
+            <div>
+                <h3>ALATA</h3>
+                <div></div>
+                <input id="topScreen" type="text" readonly>
+                <input placeholder="0" id="secScreen" type="text" readonly>
+            </div>
+            <button class="grey" onclick="operators('%')">%</button>
+            <button class="grey" onclick="specialCharacters('√')">&Sqrt;</button>
+            <button class="grey" onclick="specialCharacters('sqr')">x<sup>2</sup></button>
+            <button class="grey"><sup>1</sup>/<sub>x</sub></button>
+            <button class="grey" onclick="clearScreen('ce')">CE</button>
+            <button class="grey" onclick="clearScreen('c')">C</button>
+            <button class="grey" onclick="clearScreen('del')">&LeftArrow;</button>
+            <button class="grey" onclick="operators('/')">&divide;</button>
+            <button class="black" onkeyup="digits(event)" onclick="digits(7)">7</button>
+            <button class="black" onclick="digits(8)">8</button>
+            <button class="black" onclick="digits(9)">9</button>
+            <button class="grey" onclick="operators('*')">&times;</button>
+            <button class="black" onclick="digits(4)">4</button>
+            <button class="black" onclick="digits(5)">5</button>
+            <button class="black" onclick="digits(6)">6</button>
+            <button class="grey" onclick="operators('-')">-</button>
+            <button class="black" onclick="digits(1)">1</button>
+            <button class="black" onclick="digits(2)">2</button>
+            <button class="black" onclick="digits(3)">3</button>
+            <button class="grey" onclick="operators('+')">+</button>
+            <button class="grey">&PlusMinus;</button>
+            <button class="black" onclick="digits(0)">0</button>
+            <button class="grey" onclick="digits('.')">.</button>
+            <button class="grey" onclick="equalTo()">=</button>
+            <input style="height: 0;" onblur="this.focus()" autofocus onkeyup="digitEvent(event)">
+        </div>
+
+        <script>
+            var solvedOut;
+            var specialchar = false;
+            var operatorIsLast = false;
+            var justLeftForScreen1 = false;
+            var u = 'this is my class'
+            function digits(val) {
+                var onscreen1 = topScreen.value;
+                var onscreen2 = secScreen.value;
+                if (justLeftForScreen1 == false) {
+                    secScreen.value = onscreen2 + val;
+                } else if (justLeftForScreen1 === true || onscreen1.slice(-1) == ')') {
+                    secScreen.value = val;
+                    justLeftForScreen1 = false;
+                }else if (operatorIsLast === true){
+                    var pos = onscreen1.lastIndexOf(' ');
+                    secScreen.value = val;
+                    topScreen.value = onscreen1.slice(0, pos+1).concat(val, ' ');
+                }
+                operatorIsLast = false;
+                specialchar = false;
+            }
+            
+            function operators(val) {
+                var onscreen1 = topScreen.value;
+                var onscreen2 = secScreen.value;
+                if ((onscreen1 != '' && operatorIsLast == false) && onscreen1.slice(-1) == ')') {
+                    topScreen.value = onscreen1.concat(' ', val, ' ')
+                } else if (onscreen1 != '' && operatorIsLast == false) {
+                    topScreen.value = onscreen1.concat(onscreen2,' ', val, ' ');
+                    secScreen.value = eval(topScreen.value.slice(0,-2));
+                } else if (onscreen1 == '' && onscreen2 == '') {
+                    topScreen.value = '0 ' + val + ' ';
+                }else {
+                    topScreen.value = onscreen2.concat(' ', val, ' ');
+                }
+                if (onscreen1 != '' && operatorIsLast == true) {
+                    topScreen.value = onscreen1.slice(0,-2).concat(val, ' ');
+                }
+                justLeftForScreen1 = true;
+                operatorIsLast = true;
+                specialchar = true;
+            }
+
+            function clearScreen(val) {
+                if (val == 'c') {
+                    topScreen.value = '';
+                    secScreen.value = '';
+                }else if (val == 'ce') {
+                    secScreen.value = '';
+                } else if (val == 'del') {
+                    secScreen.value = secScreen.value.slice(0,-1);
+                }
+            }
+
+            function equalTo() {
+                var collected = topScreen.value.concat(secScreen.value);
+                if (collected.indexOf('√') != -1 || collected.indexOf('sqr') != -1) {
+                    if (collected.indexOf('√') != -1 ) {
+                        var solved = collected.replace(/√/g, 'Math.sqrt');
+                    }
+                    if (collected.indexOf('sqr') != -1 ) {
+                        var sqr_r = collected.indexOf('sqr')
+                        var startingBrace = collected.indexOf('(', sqr_r+1)
+                        var endingBrace = collected.indexOf(')', startingBrace)
+                        var number = collected.slice(startingBrace+1, endingBrace)
+                        var wholeWord = collected.slice(sqr_r, endingBrace+1)
+                        var solved = collected.replace(wholeWord, Math.pow(number, 2))
+                    }
+                    secScreen.value = eval(solved);
+                } else if (justLeftForScreen1 == true) {
+                    secScreen.value = eval(topScreen.value.slice(0, -2));
+                } else {
+                    secScreen.value = eval(topScreen.value.concat(secScreen.value));
+                }
+                topScreen.value = '';
+            }
+
+            function specialCharacters(val) {
+                var onscreen1 = topScreen.value;
+                var onscreen2 = secScreen.value;
+                var scrn1Strt = onscreen1.charAt(0)
+                if (onscreen1 == '') {
+                    if (val == '√') {
+                        topScreen.value = onscreen1.concat(val, '(', onscreen2, ')');
+                        var solved = topScreen.value.replace(/√/g, 'Math.sqrt');
+                    } else if (val == 'sqr') {
+                        topScreen.value = onscreen1.concat(val, '(', onscreen2, ')');
+                        var solved = 'Math.pow(' + onscreen2 + ',2)';
+                    } else {
+                        topScreen.value = onscreen1.concat(val, '(', onscreen2, ')');
+                        var solved = topScreen.value.replace(val, 'Math.'+val);
+                    }
+                    secScreen.value = eval(solved);
+                    justLeftForScreen1 = true;
+                } else if ((onscreen1[0] == '√' || onscreen1.substr(0, 3) == 'sqr') && onscreen1.slice(-1) == ')') {
+                    if (val == '√') {
+                        topScreen.value = '√'.concat('(', onscreen2, ')')
+                        var solved = topScreen.value.replace('√', 'Math.sqrt');
+                    } else if (val == 'sqr') {
+                        topScreen.value = 'sqr'.concat('(', onscreen2, ')')
+                        var solved = 'Math.pow(' + onscreen2 + ',2)'
+                    }
+                    secScreen.value = eval(solved);
+                    justLeftForScreen1 = true;
+                } else if ((val == '√' || val == 'sqr') && onscreen1 != '') {
+                    if (val == '√') {
+                        topScreen.value = onscreen1.concat('√(', onscreen2, ')');
+                        var solved = topScreen.value.replace(/√/g, 'Math.sqrt')
+                    } else if (val == 'sqr') {
+                        topScreen.value = onscreen1.concat('sqr(', onscreen2, ')');
+                        var solved = topScreen.value.replace(/√/g, 'Math.sqrt')
+                    }
+                    secScreen.value = eval(solved);
+                }
+                specialchar = true
+                justLeftForScreen1 = true;
+            }
+            function digitEvent(e) {
+                if (!(isNaN(e['key']))) {
+                    digits(e['key'])
+                } else if (e['key'] == 'Backspace') {
+                    clearScreen('del')
+                } else if (e['key'] == '/' || e['key'] == '*' || e['key'] == '+' || e['key'] == '-') {
+                    operators(e['key'])
+                } else if (e['key'] == 'Enter') {
+                    equalTo('total')
+                } else if (e['key'] == '.') {
+                    digits(e['key'])
+                }
+            }
+        </script>
+    </body>
+</html>

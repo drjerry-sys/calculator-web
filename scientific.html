@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="scientific.css">
+        <title>calculator || Scientific</title>
+    </head>
+    <body>
+        <div class="general-div">
+            <div>
+                <h3>Scientific</h3>
+                <div></div>
+                <input id="topScreen" type="text" readonly>
+                <input placeholder="0" id="secScreen" type="text" readonly>
+            </div>
+            <button class="grey" onclick="">x<sup>2</sup></button>
+            <button class="grey" onclick="">x<sup>y</sup></button>
+            <button class="grey" onclick="trig('sin')">sin</button>
+            <button class="grey" onclick="trig('cos')">cos</button>
+            <button class="grey" onclick="trig('tan')">tan</button>
+            <button class="grey" onclick="specialCharacters('√')">&Sqrt;</button>
+            <button class="grey" onclick="">10<sup>x</sup></button>
+            <button class="grey" onclick="">log</button>
+            <button class="grey" onclick="">Exp</button>
+            <button class="grey" onclick="">Mod</button>
+            <button class="grey" onclick="">&UpArrow;</button>
+            <button class="grey" onclick="clearScreen('ce')">CE</button>
+            <button class="grey" onclick="clearScreen('c')">C</button>
+            <button class="grey" onclick="clearScreen('del')">&LeftArrow;</button>
+            <button class="grey" onclick="operators('/')">&divide;</button>
+            <button class="grey" onclick="operators('/')">&pi;</button>            
+            <button class="black" onclick="digits(7)">7</button>
+            <button class="black" onclick="digits(8)">8</button>
+            <button class="black" onclick="digits(9)">9</button>
+            <button class="grey" onclick="operators('*')">&times;</button>
+            <button class="grey" onclick="operators('/')">n!</button>
+            <button class="black" onclick="digits(4)">4</button>
+            <button class="black" onclick="digits(5)">5</button>
+            <button class="black" onclick="digits(6)">6</button>
+            <button class="grey" onclick="operators('-')">-</button>
+            <button class="grey">&PlusMinus;</button>
+            <button class="black" onclick="digits(1)">1</button>
+            <button class="black" onclick="digits(2)">2</button>
+            <button class="black" onclick="digits(3)">3</button>
+            <button class="grey" onclick="operators('+')">+</button>
+            <button class="grey">(</button>
+            <button class="grey">)</button>
+            <button class="black" onclick="digits(0)">0</button>
+            <button class="grey" onclick="digits('.')">.</button>
+            <button class="grey" onclick="equalTo('total')">=</button>
+        </div>
+        <script>
+            var trigChck = false;
+            var goingToSecScreen = false
+            var solved;
+            function digits(val) {
+                if (goingToSecScreen === false) {
+                    if (secScreen.value == '') {
+                        secScreen.value = val
+                    } else if (secScreen.value != '') {
+                        secScreen.value = secScreen.value + val
+                    }
+                } else if (goingToSecScreen === true) {
+                    secScreen.value = val
+                    goingToSecScreen = false
+                }
+            }
+            function operators(val) {
+                /* the following lines of code does the calculation the first
+                if statement changes the sign whenever the user use operators twice */
+                if (trigChck == true && goingToSecScreen == true) {
+                    topScreen.value = topScreen.value + val + ' '
+                    trigChck = false
+                } else if (goingToSecScreen == true) {
+                    topScreen.value = topScreen.value.slice(0, -2) + val + ' '
+                } else if (goingToSecScreen == false) {
+                    topScreen.value = topScreen.value + secScreen.value + ' ' + val + ' '
+                    secScreen.value = equalTo('inner')
+                    goingToSecScreen = true
+                }
+            }
+            function trig(val) {
+                if (topScreen.value == '') {
+                    if (val == 'tan') {
+                        topScreen.value = 'tan(' + secScreen.value + ')'
+                        solved = Math.tan(secScreen.value*Math.PI/180)
+                        secScreen.value = solved
+                    }else if (val == 'sin') {
+                        topScreen.value = 'sin(' + secScreen.value + ')'
+                        solved = Math.sin(secScreen.value*Math.PI/180)
+                        secScreen.value = solved
+                    } else if (val == 'cos') {
+                        topScreen.value = 'cos(' + secScreen.value + ')'
+                        solved = Math.cos(secScreen.value*Math.PI/180)
+                        secScreen.value = solved
+                    }
+                } else if (topScreen.value != '') {
+                    topScreen.value = topScreen.value.concat(val, '(', secScreen.value, ') ')
+                    secScreen.value = equalTo('inner')
+                    goingToSecScreen = true
+                }
+                trigChck = true
+                goingToSecScreen = true
+            }
+            function equalTo(val) {
+                var trigWord;
+                var firstBrace;
+                var secondBrace;
+                var trigOper;
+                var calOn;
+                var solved = topScreen.value.slice(0, -2);
+                if (val == 'inner') {
+                    if (topScreen.value.indexOf('tan') > -1) {
+                        trigWord = topScreen.value.indexOf('tan')
+                        firstBrace = topScreen.value.substring('(', trigWord)
+                        secondBrace = topScreen.value.substring(')', trigWord)
+                        trigOper = topScreen.value.slice(trigWord, secondBrace+1)
+                        calOn = topScreen.value.slice(firstBrace, secondBrace)
+                        solved = topScreen.value.replace(trigOper, 'Math.tan('+calOn+'*Math.PI/180)')
+                    }
+                    if (topScreen.value.indexOf('sin') > -1) {
+                        trigWord = topScreen.value.indexOf('sin')
+                        firstBrace = topScreen.value.substring('(', trigWord)
+                        secondBrace = topScreen.value.substring(')', trigWord)
+                        trigOper = topScreen.value.slice(trigWord, secondBrace+1)
+                        calOn = topScreen.value.slice(firstBrace, secondBrace)
+                        solved = topScreen.value.replace(trigOper, 'Math.sin('+calOn+'*Math.PI/180)')
+                    }
+                    if (topScreen.value.indexOf('cos') > -1) {
+                        trigWord = topScreen.value.indexOf('cos')
+                        firstBrace = topScreen.value.substring('(', trigWord)
+                        secondBrace = topScreen.value.substring(')', trigWord)
+                        trigOper = topScreen.value.slice(trigWord, secondBrace+1)
+                        calOn = topScreen.value.slice(firstBrace, secondBrace)
+                        solved = topScreen.value.replace(trigOper, 'Math.cos('+calOn+'*Math.PI/180)')
+                    }
+                    solved = eval(solved)
+                    return solved
+                } else if (val == 'total') {
+                    solved = Math.round(eval(topScreen.value + secScreen.value))
+                    topScreen.value = ''
+                    secScreen.value = solved
+                }
+            }
+            function clearScreen(val) {
+                if (val == 'del') {
+                    if (isNaN(secScreen.value) || secScreen.value == 'Infinity') {
+                        secScreen.value = ''
+                    } else {
+                        secScreen.value = secScreen.value.slice(0, -1)
+                    }
+                    
+                } else if (val == 'c') {
+                    secScreen.value = ''
+                } else if (val == 'ce') {
+                    secScreen.value = ''
+                    topScreen.value = ''
+                }
+            }
+        </script>
+    </body>
+</html>

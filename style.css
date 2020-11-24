@@ -1,0 +1,95 @@
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    outline: 0;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+div  {
+    
+}
+
+.general-div {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 328px;
+    height: 495px;
+    background-color: rgb(31, 31, 31);
+    margin: 50px auto;
+}
+
+.general-div div {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 180px;
+}
+
+.general-div div div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    height: 15px;
+}
+
+.general-div div h3 {
+    margin: 10px 0 0 10px;
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #fff;
+}
+
+.general-div div input {
+    width: 100%;
+    margin: 0 10px 0 10px;
+    cursor: default;
+    background-color: rgb(31, 31, 31);
+    text-align: right;
+    color: #fff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.general-div div #topScreen {
+    height: 50px;
+    font-size: 20px;
+}
+
+.general-div div #secScreen {
+    height: 75px;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.general-div div #secScreen::placeholder {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.general-div button {
+    width: 78px;
+    height: 48px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.general-div button:hover {
+    background-color: rgb(31, 31, 31);
+}
+
+.general-div .grey {
+    background-color: rgb(19, 19, 19);
+}
+
+.general-div .black {
+    background-color: rgb(6, 6, 6);
+}
